@@ -1,5 +1,8 @@
 from customtkinter import *
 from PIL import Image, ImageTk
+from song_inf import *
+from test import *
+
 
 
 class Window(CTk):
@@ -13,7 +16,9 @@ class Window(CTk):
 
         self.play_pause_state = "pause"
 
-        
+        self.song_info = get_song_info('test.mp3')
+
+
         #обложка
         self.song_icon_frame = CTkFrame(self, fg_color="transparent")
         self.song_icon_frame.grid(row=0, column=0, padx=555, pady=(150, 0), sticky="nsw")
@@ -26,10 +31,10 @@ class Window(CTk):
         self.song_info_frame = CTkFrame(self, fg_color="transparent")
         self.song_info_frame.grid(row=0, column=0, padx=610, pady=(380, 0), sticky="nsw")
 
-        self.music_name_label = CTkLabel(self.song_info_frame, text="Название песни", font=(None, 16), justify=CENTER)
+        self.music_name_label = CTkLabel(self.song_info_frame, text=self.song_info[-1], font=(None, 16), justify=CENTER)
         self.music_name_label.grid(row=1, column=2, padx=5, pady=5, columnspan=1)
 
-        self.music_author_label = CTkLabel(self.song_info_frame, text="Исполнитель", font=(None, 13), justify=CENTER)
+        self.music_author_label = CTkLabel(self.song_info_frame, text=self.song_info[0], font=(None, 13), justify=CENTER)
         self.music_author_label.grid(row=2, column=2, padx=5, pady=5, columnspan=1)
 
         #Фрейм, хранящий кнокпи переключения музыки
@@ -52,6 +57,7 @@ class Window(CTk):
             self.play_btn.configure(text="⏸️")
             self.play_pause_state = "play"
             #Проигрывание музона
+
 
         elif self.play_pause_state == "play":
             self.play_btn.configure(text="▶️")
