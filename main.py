@@ -1,8 +1,41 @@
 from customtkinter import *
-from PIL import Image, ImageTk
+from tkinter import *
+from PIL import Image
 from song_inf import *
 from test import *
 
+
+class ScrollableLabelButtonFrame(CTkScrollableFrame):
+    def __init__(self, master, command=None, **kwargs):
+        super().__init__(master, **kwargs)
+        self.grid_columnconfigure(0, weight=1)
+
+        self.command = command
+        self.radiobutton_variable = StringVar()
+        self.label_list = []
+        self.button_list = []
+
+    def add_item(self, number, item, image=None):
+        label = CTkLabel(self, text=number, image=image, compound="left", padx=5, anchor="w")
+        if len(item) > 21:
+            button = CTkButton(self, text=item[:21:]+"...", width=190, height=28, font=(None, 14), fg_color="transparent")
+        else:
+            button = CTkButton(self, text=item, width=190, height=28, fg_color="transparent")
+        if self.command is not None:
+            button.configure(command=lambda: self.command(item))
+        label.grid(row=len(self.label_list), column=0, pady=(0, 10), sticky="w")
+        button.grid(row=len(self.button_list), column=1, pady=(0, 10), padx=5)
+        self.label_list.append(label)
+        self.button_list.append(button)
+
+    def remove_item(self, item=None, number=None):
+        for label, button in zip(self.label_list, self.button_list):
+            if item == label.cget("text"):
+                label.destroy()
+                button.destroy()
+                self.label_list.remove(label)
+                self.button_list.remove(button)
+                return
 
 
 class Window(CTk):
@@ -16,7 +49,19 @@ class Window(CTk):
 
         self.play_pause_state = "pause"
 
+        #Выбор папки с песенками
+        self.browse_frame = CTkFrame(self, fg_color="transparent")
+        self.browse_frame.grid(row=0, column=0, padx=0, pady=(7, 0), sticky="nsw")
+        self.browse_button = CTkButton(self.browse_frame, text="📁", command=None, font=(None, 16), width=270, height=30)
+        self.browse_button.grid(row=0, column=0, padx=5, pady=5)
+
         self.song_info = get_song_info('test.mp3')
+
+        #тут скроллбар
+        self.scrollbar = ScrollableLabelButtonFrame(self.browse_frame, height=550, width=260, fg_color="transparent")
+        for i in range(100):
+            self.scrollbar.add_item(number=i+100000, item="ssssssssssssssssssssssss")
+        self.scrollbar.grid(row=2, column=0, padx=5, pady=5)
 
 
         #обложка
