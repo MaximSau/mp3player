@@ -1,8 +1,7 @@
 from customtkinter import *
-from tkinter import *
 from PIL import Image
 from song_inf import *
-from test import *
+from pygame import mixer
 
 
 class ScrollableLabelButtonFrame(CTkScrollableFrame):
@@ -43,11 +42,14 @@ class Window(CTk):
         super().__init__()
         self.title("my player")
         self.geometry("1024x640")
+        self.resizable(False, False)
         self.grid_rowconfigure(0, weight=1)
         set_appearance_mode("dark")
         set_default_color_theme("lavender.json")
 
-        self.play_pause_state = "pause"
+        self.play_pause_state = "play"
+        mixer.init()
+
 
         #Выбор папки с песенками
         self.browse_frame = CTkFrame(self, fg_color="transparent")
@@ -57,13 +59,14 @@ class Window(CTk):
 
         self.song_info = get_song_info('test.mp3')
 
+
         #тут скроллбар
         self.scrollbar = ScrollableLabelButtonFrame(self.browse_frame, height=550, width=260, fg_color="transparent")
-        for i in range(100):
-            self.scrollbar.add_item(number=i+100000, item="ssssssssssssssssssssssss")
         self.scrollbar.grid(row=2, column=0, padx=5, pady=5)
+        for i in range(100):
+            self.scrollbar.add_item(number=i, item="124124125")
 
-
+        
         #обложка
         self.song_icon_frame = CTkFrame(self, fg_color="transparent")
         self.song_icon_frame.grid(row=0, column=0, padx=555, pady=(150, 0), sticky="nsw")
@@ -96,17 +99,22 @@ class Window(CTk):
         self.back_btn.grid(row=1, column=1, padx=5, pady=10, columnspan=1)
         
 
-
     def play_song(self):
+        mixer.music.load('test.mp3')
+        mixer.music.play()
         if self.play_pause_state == "pause":
             self.play_btn.configure(text="⏸️")
             self.play_pause_state = "play"
             #Проигрывание музона
-
+            mixer.music.unpause()
 
         elif self.play_pause_state == "play":
             self.play_btn.configure(text="▶️")
             self.play_pause_state = "pause"
+            mixer.music.load('test.mp3')
+            mixer.music.pause()
+
+
             
 
 if __name__ == "__main__":
